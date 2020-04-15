@@ -1,13 +1,13 @@
 import React from 'react';
 import { AppLoading } from 'expo';
-import { StyleSheet, Dimensions } from 'react-native';
 import * as Font from 'expo-font';
 import { HomeScreen } from './screens/HomeScreen';
+import { Notify } from './screens/Notify';
 import { Ionicons } from '@expo/vector-icons';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
-const { width, height } = Dimensions.get('screen');
+const Stack = createStackNavigator();
 
 export default class App extends React.Component {
   constructor(props) {
@@ -32,12 +32,12 @@ export default class App extends React.Component {
     }
 
     return (
-      <HomeScreen />
+      <NavigationContainer>
+        <Stack.Navigator>
+          <Stack.Screen name="Home" component={HomeScreen} options={{ title: 'Главная' }}/>
+          <Stack.Screen name="Notify" component={Notify} options={{ title: 'Напоминалка' }}/>
+        </Stack.Navigator>
+      </NavigationContainer>
     );
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-  },
-});

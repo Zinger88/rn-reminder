@@ -1,6 +1,8 @@
 import React from 'react';
 import { Text, ImageBackground } from 'react-native';
 import { Button, Container, Header, Content, List, ListItem } from 'native-base';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
 
 const reminders = [
     {
@@ -39,7 +41,7 @@ export class HomeScreen extends React.Component {
                             return (
                             <ListItem 
                                 key={index + Math.random()}
-                                onPress={()=> alert(reminder.title)}
+                                onPress={() => this.props.navigation.navigate('Notify')}
                             >
                                 <Text>{reminder.title}</Text>
                             </ListItem>
