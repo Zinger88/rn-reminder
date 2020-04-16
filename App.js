@@ -19,7 +19,9 @@ import * as firebase from 'firebase';
 // если не прошла то что
 // добавление заметок
 // пуш уведомления
-// нормально прочитать доку по firebase
+// нормально прочитать доку по firebase 
+
+// link to video firebase https://www.youtube.com/watch?v=TkuQAjnaSbM
 
 var firebaseConfig = {
   apiKey: "AIzaSyCvno9LVLycWiFv9j-giDwshEmG0znxHYY",
