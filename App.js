@@ -61,9 +61,9 @@ export default class App extends React.Component {
     return (
       <NavigationContainer>
         <Stack.Navigator>
-          <Stack.Screen name="Login" component={LoginScreen} options={{ title: 'Логин' }}/>
-          <Stack.Screen name="Register" component={RegisterScreen} options={{ title: 'Регистрация' }}/>
-          <Stack.Screen name="Home" component={HomeScreen} options={{ title: 'Главная' }}/>
+          {/* <Stack.Screen name="Login" component={LoginScreen} options={{ title: 'Логин' }}/>
+          <Stack.Screen name="Register" component={RegisterScreen} options={{ title: 'Регистрация' }}/> */}
+          <Stack.Screen name="Home" component={HomeScreen} options={{ title: 'По бизнесу' }}/>
           <Stack.Screen name="Notify" component={Notify} options={{ title: 'Напоминалка' }}/>
         </Stack.Navigator>
       </NavigationContainer>

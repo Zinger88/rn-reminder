@@ -26,9 +26,9 @@ export class LoginScreen extends React.Component {
 
     render () {
         return (
-            <View>
-                <Text>
-                    {`Hello again`}
+            <View style={style.container}>
+                <Text style={style.title}>
+                    {`Hello again!`}
                 </Text>
 
                 <View>
@@ -39,7 +39,7 @@ export class LoginScreen extends React.Component {
                     <Text>Email Adress</Text>
                     <TextInput 
                         autoCapitalize="none" 
-                        style={{borderBottomColor: '#333',borderBottomWidth: 1, marginHorizontal: 10}}
+                        style={style.input}
                         onChangeText={email => this.setState({ email })} // TODO: move to function
                         value={this.state.email}
                     ></TextInput>
@@ -49,20 +49,19 @@ export class LoginScreen extends React.Component {
                     <Text>Password</Text>
                     <TextInput 
                         autoCapitalize="none" 
-                        style={{borderBottomColor: '#333',borderBottomWidth: 1, marginHorizontal: 10}}
+                        style={style.input}
                         onChangeText={password => this.setState({ password })} // TODO: move to function
                         value={this.state.password}
                     ></TextInput>
                 </View>
                 <Button 
                     block 
-                    style={{marginHorizontal: 10}}
+                    style={{marginBottom: 20}}
                     onPress={this.handleLogin}
-                ><Text>Sing In</Text></Button>
+                ><Text style={{color: 'white'}}>Sing In</Text></Button>
                 <Button 
                     block 
-                    success 
-                    style={{marginHorizontal: 10}}
+                    success
                     onPress={() => this.props.navigation.navigate('Register',{
                         itemId: 1,
                         otherParam: ''
@@ -72,3 +71,18 @@ export class LoginScreen extends React.Component {
         )
     }
 }
+
+const style = new StyleSheet.create({
+    title: {
+        marginVertical: 20,
+        fontSize: 20
+    },
+    container: {
+        paddingHorizontal: 15
+    },
+    input: {
+        borderBottomColor: '#333',
+        borderBottomWidth: 1,
+        marginBottom: 20
+    }
+})

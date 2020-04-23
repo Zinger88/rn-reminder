@@ -30,8 +30,8 @@ export class RegisterScreen extends React.Component {
 
     render () {
         return (
-            <View>
-                <Text>
+            <View style={style.container}>
+                <Text style={style.title}>
                     {`HI MAN! SING UP TO GET STARTED`}
                 </Text>
 
@@ -43,7 +43,7 @@ export class RegisterScreen extends React.Component {
                     <Text>Full Name</Text>
                     <TextInput 
                         autoCapitalize="none" 
-                        style={{borderBottomColor: '#333',borderBottomWidth: 1, marginHorizontal: 10}}
+                        style={style.input}
                         onChangeText={name => this.setState({ name })} // TODO: move to function
                         value={this.state.name}
                     ></TextInput>
@@ -53,7 +53,7 @@ export class RegisterScreen extends React.Component {
                     <Text>Email Adress</Text>
                     <TextInput 
                         autoCapitalize="none" 
-                        style={{borderBottomColor: '#333',borderBottomWidth: 1, marginHorizontal: 10}}
+                        style={style.input}
                         onChangeText={email => this.setState({ email })} // TODO: move to function
                         value={this.state.email}
                     ></TextInput>
@@ -63,7 +63,7 @@ export class RegisterScreen extends React.Component {
                     <Text>Password</Text>
                     <TextInput 
                         autoCapitalize="none" 
-                        style={{borderBottomColor: '#333',borderBottomWidth: 1, marginHorizontal: 10}}
+                        style={style.input}
                         onChangeText={password => this.setState({ password })} // TODO: move to function
                         value={this.state.password}
                     ></TextInput>
@@ -71,19 +71,33 @@ export class RegisterScreen extends React.Component {
                 <Button 
                     block 
                     warning
-                    style={{marginHorizontal: 10}}
+                    style={{marginBottom: 10}}
                     onPress={this.handleSignUp}
                 ><Text>Sing UP</Text></Button>
                 <Button 
                     block 
                     success 
-                    style={{marginHorizontal: 10}}
                     onPress={() => this.props.navigation.navigate('Login',{
                         itemId: 1,
                         otherParam: ''
                     })}    
-                ><Text>Login</Text></Button>
+                ><Text style={{color: 'white'}}>Login</Text></Button>
             </View>
         )
     }
 }
+
+const style = new StyleSheet.create({
+    title: {
+        marginVertical: 20,
+        fontSize: 20
+    },
+    container: {
+        paddingHorizontal: 15
+    },
+    input: {
+        borderBottomColor: '#333',
+        borderBottomWidth: 1,
+        marginBottom: 20
+    }
+})
