@@ -29,13 +29,13 @@ export class HomeScreen extends React.Component {
         .catch((error)=>{ Alert.alert("Error", error.message); });
 
         const db = firebase.firestore();
-        const {email, displayName} = firebase.auth().currentUser;
         const reminders = [];
         db.collection('reminders').get().then((snapshot)=>{
             snapshot.docs.forEach((doc) => {
                 const remind = {...doc.data(), id: doc.id};
                 reminders.push(remind);
             })
+            const {email, displayName} = firebase.auth().currentUser;
             this.setState({email, displayName, reminders});
         }).catch((error)=>{
             console.log(error.message)
