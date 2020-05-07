@@ -8,11 +8,24 @@ import { LoginScreen } from './screens/LoginScreen';
 import { Ionicons } from '@expo/vector-icons';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+import * as firebase from 'firebase';
+
+// fixes for long time warning for expo
+import { YellowBox } from 'react-native';
+import _ from 'lodash';
+
+YellowBox.ignoreWarnings(['Setting a timer']);
+const _console = _.clone(console);
+console.warn = message => {
+  if (message.indexOf('Setting a timer') <= -1) {
+    _console.warn(message);
+  }
+};
 
 
 const Stack = createStackNavigator();
 
-import * as firebase from 'firebase';
+
 
 
 // разобраться с экранами + с прохождением верификации 
@@ -61,8 +74,8 @@ export default class App extends React.Component {
     return (
       <NavigationContainer>
         <Stack.Navigator>
-          {/* <Stack.Screen name="Login" component={LoginScreen} options={{ title: 'Логин' }}/>
-          <Stack.Screen name="Register" component={RegisterScreen} options={{ title: 'Регистрация' }}/> */}
+          {/* <Stack.Screen name="Login" component={LoginScreen} options={{ title: 'Логин' }}/> */}
+          {/* <Stack.Screen name="Register" component={RegisterScreen} options={{ title: 'Регистрация' }}/> */}
           <Stack.Screen name="Home" component={HomeScreen} options={{ title: 'По бизнесу' }}/>
           <Stack.Screen name="Notify" component={Notify} options={{ title: 'Напоминалка' }}/>
         </Stack.Navigator>

@@ -23,6 +23,11 @@
     ],
     "ios": {
       "supportsTablet": true
+    },
+    "android": {
+      "package" : "com.kylinar.rnnotify",
+      "versionCode": 1,
+      "permissions": []
     }
   }
 }

@@ -1,45 +1,54 @@
 import React from 'react';
-import { ImageBackground, StyleSheet, Modal, TouchableHighlight, View } from 'react-native';
+import { ImageBackground, StyleSheet, Modal, TouchableHighlight, View, Alert } from 'react-native';
 import { Button, Container, Header, Content, List, ListItem, Text, Textarea } from 'native-base';
 import * as firebase from 'firebase';
+import 'firebase/firestore';
 
-const reminders = [
-    {
-        id: Math.random() * 21,
-        title: 'Позвонить Светке',
-        date: Date.now() + 1000 * 5,
-        description: 'Лучше утром не звонить'
-    },
-    {
-        id: Math.random() * 21,
-        title: 'Zakomitits"a',
-        date: Date.now() + 1000 * 5,
-        description: 'Коммитнуть точно надо'
-    },
-    {
-        id: Math.random() * 21,
-        title: 'Забабахать прилагу',
-        date: Date.now() + 1000 * 5,
-        description: 'Сделать от души чтобы бло что показать)'
-    }
-]
+import {decode, encode} from 'base-64'
+
+if (!global.btoa) {  global.btoa = encode }
+
+if (!global.atob) { global.atob = decode }
 
 export class HomeScreen extends React.Component {
     state = {
         email: '',
         displayName: '',
         modalVisible: false,
-        reminders: reminders,
+        reminders: [],
         textCache: ''
     }
 
+    componentWillUnmount() {
+        console.log('I think need to work with state & save reminders to DATABASE ONCE (general idea)')
+        // I think need to work with state & save reminders to DATABASE ONCE (general idea) 
+    }
+
     componentDidMount() {
-        //const {email, displayName} = firebase.auth().currentUser;
-        //this.setState({email, displayName});
+        firebase.auth().signInWithEmailAndPassword('kylinar88@gmail.com','271289')
+        .catch((error)=>{ Alert.alert("Error", error.message); });
+
+        const db = firebase.firestore();
+        const {email, displayName} = firebase.auth().currentUser;
+        const reminders = [];
+        db.collection('reminders').get().then((snapshot)=>{
+            snapshot.docs.forEach((doc) => {
+                const remind = {...doc.data(), id: doc.id};
+                reminders.push(remind);
+            })
+            this.setState({email, displayName, reminders});
+        }).catch((error)=>{
+            console.log(error.message)
+        })
     }
 
     signOutUser = () => {
-        firebase.auth().signOut()
+        firebase.auth().signOut();
+        this.props.navigation.navigate('Login',{
+            itemId: 1,
+            otherParam: reminder
+        })
+
     }
 
     createRemind = () => {
@@ -48,25 +57,30 @@ export class HomeScreen extends React.Component {
 
     addRemind = (title) => {
         const newRemind = {
-            id: Math.random() * 21,
             title: title ? title : 'Заметка без названия',
             date: Date.now(),
-            description: 'новая заметка'
+            description: 'Not now'
         }
-        
+
         this.setState({
             reminders: [...this.state.reminders, newRemind],
             textCache: '',
             modalVisible: false
         });
+
+        const db = firebase.firestore(); // need to create global database
+        db.collection('reminders').add(newRemind);
     }
 
     removeRemind = (id) => () => {
         const newRemindersArray = this.state.reminders.filter(i => i.id !== id)
-
+        
         this.setState({
             reminders: newRemindersArray
-        })
+        });
+
+        const db = firebase.firestore(); // need to create global database
+        db.collection('reminders').doc(id).delete();
     }
 
     writeRemind = (text) => {
@@ -125,7 +139,7 @@ export class HomeScreen extends React.Component {
                     </Modal>
 
                     <Content>
-                        <Text style={style.title}>{`Yo ${this.state.email}, lets check you business`}</Text>
+                        <Text style={style.title}>{`Yo ${this.state.displayName || this.state.email}, lets check you business`}</Text>
                         <Button 
                             //onPress={this.createRemind}
                             onPress={() => this.setModalVisible(!this.state.modalVisible)}
