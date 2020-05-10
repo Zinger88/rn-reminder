@@ -1,6 +1,8 @@
 import React from 'react';
 import { ImageBackground, StyleSheet, Modal, TouchableHighlight, View, Alert } from 'react-native';
 import { Button, Container, Header, Content, List, ListItem, Text, Textarea } from 'native-base';
+import DateTimePickerModal from 'react-native-modal-datetime-picker';
+import { ModalComponent } from './components/ModalComponent'
 import * as firebase from 'firebase';
 import 'firebase/firestore';
 
@@ -16,15 +18,22 @@ export class HomeScreen extends React.Component {
         displayName: '',
         modalVisible: false,
         reminders: [],
-        textCache: ''
+        cache: {
+            text: '',
+            date: '',
+            time: ''
+        },
+        isPickerVisible: false,
+        pickerType: 'date'
     }
 
     componentWillUnmount() {
-        console.log('I think need to work with state & save reminders to DATABASE ONCE (general idea)')
+        console.log('need to add redux')
         // I think need to work with state & save reminders to DATABASE ONCE (general idea) 
     }
 
     componentDidMount() {
+        console.log('did mount')
         firebase.auth().signInWithEmailAndPassword('kylinar88@gmail.com','271289')
         .catch((error)=>{ Alert.alert("Error", error.message); });
 
@@ -51,20 +60,20 @@ export class HomeScreen extends React.Component {
 
     }
 
-    createRemind = () => {
-        console.log('tut');
-    }
-
-    addRemind = (title) => {
+    addRemind = (cache) => {
         const newRemind = {
-            title: title ? title : 'Заметка без названия',
-            date: Date.now(),
-            description: 'Not now'
+            title: cache.title ? title : 'Заметка без названия',
+            date:  cache.date || Date.now(),
+            time: cache.time || ''
         }
 
         this.setState({
             reminders: [...this.state.reminders, newRemind],
-            textCache: '',
+            cache: {
+                ...this.state.cache,
+                text: '',
+                date: ''
+            },
             modalVisible: false
         });
 
@@ -85,14 +94,39 @@ export class HomeScreen extends React.Component {
 
     writeRemind = (text) => {
         this.setState({
-            textCache: text
+            cache: {
+                ...this.state.cache,
+                text: text
+            }
         })
+    }
+
+    handlePickerConfirm = (date) => {
+        console.log(date)
+        this.setState({isPickerVisible: false})
+        // this function checks type of picker
+        // and set up current  field in cache
+    }
+
+    hidePicker = () => {
+        this.setState({isPickerVisible: false})
+    }
+
+    showPicker = (type) => {
+        this.setState({
+            pickerType: type,
+            isPickerVisible: true
+        });
     }
 
     setModalVisible = (visible) => {
         this.setState({ 
             modalVisible: visible,
-            textCache: '' 
+            cache: {
+                text: '',
+                date: '',
+                time: ''
+            } 
         });
     }
 
@@ -100,13 +134,14 @@ export class HomeScreen extends React.Component {
         return(
             <ImageBackground source={{uri: 'https://i.pinimg.com/originals/4c/7a/b1/4c7ab1da89e96e9051005526164af8ed.jpg'}} style={{width: '100%', height: '100%', opacity: 0.7}}>
                 <Container style={style.container}>
+                    {/* <ModalComponent
+                        modalVisible={this.state.modalVisible}
+                        setModalVisible={this.setModalVisible}
+                    ></ModalComponent> */}
                     <Modal
                         animationType="slide" 
                         transparent={true}
                         visible={this.state.modalVisible}
-                        onRequestClose={() => {
-                            Alert.alert("Modal has been closed.");
-                        }}
                     >
                         <View
                             style={style.modalContainer}
@@ -129,7 +164,29 @@ export class HomeScreen extends React.Component {
                                         style={style.modalTextarea}
                                     ></Textarea>
                                     <Button
-                                        onPress={()=> this.addRemind(this.state.textCache)}
+                                        bordered
+                                        dark
+                                        style={{marginBottom: 10}}
+                                        onPress={()=> this.showPicker('date')}
+                                    >
+                                       <Text>Выбрать дату</Text> 
+                                    </Button>
+                                    <Button
+                                        bordered
+                                        dark
+                                        style={{marginBottom: 10}}
+                                        onPress={()=> this.showPicker('time')}
+                                    >
+                                       <Text>Выбрать время</Text> 
+                                    </Button>
+                                    <DateTimePickerModal
+                                        isVisible={this.state.isPickerVisible}
+                                        mode={this.state.pickerType}
+                                        onConfirm={this.handlePickerConfirm}
+                                        onCancel={this.hidePicker}
+                                    />
+                                    <Button
+                                        onPress={()=> this.addRemind(this.state.cache)}
                                     >
                                         <Text>Готово!</Text>
                                     </Button>
@@ -140,8 +197,7 @@ export class HomeScreen extends React.Component {
 
                     <Content>
                         <Text style={style.title}>{`Yo ${this.state.displayName || this.state.email}, lets check you business`}</Text>
-                        <Button 
-                            //onPress={this.createRemind}
+                        <Button
                             onPress={() => this.setModalVisible(!this.state.modalVisible)}
                             light 
                             block 
