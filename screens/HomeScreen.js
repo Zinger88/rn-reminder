@@ -2,9 +2,11 @@ import React from 'react';
 import { ImageBackground, StyleSheet, Modal, TouchableHighlight, View, Alert } from 'react-native';
 import { Button, Container, Header, Content, List, ListItem, Text, Textarea } from 'native-base';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
-import { ModalComponent } from './components/ModalComponent'
+//import { ModalComponent } from './components/ModalComponent'
 import * as firebase from 'firebase';
 import 'firebase/firestore';
+import { format, addHours } from 'date-fns';
+//import { format, zonedTimeToUtc } from 'date-fns-tz';
 
 import {decode, encode} from 'base-64'
 
@@ -102,7 +104,8 @@ export class HomeScreen extends React.Component {
     }
 
     handlePickerConfirm = (date) => {
-        console.log(date)
+        const dateNow = addHours(Date.now(), 0);
+        console.log(format(date, 'PP/pp'),'         ', format(dateNow, 'PPpp'))
         this.setState({isPickerVisible: false})
         // this function checks type of picker
         // and set up current  field in cache
