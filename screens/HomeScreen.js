@@ -117,7 +117,7 @@ export class HomeScreen extends React.Component {
                                         style={{flexDirection: 'column', justifyContent: 'flex-start', alignContent: 'center'}}
                                     >
                                         <Text style={{textAlign: 'center', fontWeight: 'bold'}}>{reminder.title}</Text>
-                                        {/* <Text>{format(reminder.date, 'PP / pp')}</Text> // BUG WITH DATA FORMAT INTO MODAL  */}
+                                        <Text>{format(reminder.date, 'PP / pp')}</Text>
                                     </ListItem>
                                     )
                                 })}

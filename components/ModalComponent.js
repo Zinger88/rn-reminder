@@ -10,18 +10,11 @@ export class ModalComponent extends React.Component {
      * COMPONENT WILL HAVE CACHE AND RETURN DATA
      */
 
-     state = {
+    state = {
         title: '',
         date: '',
         pickerType: 'date',
         isPickerVisible: false,
-     }
-
-    componentWillUnmount() {
-        this.setState({
-            title: '',
-            date: ''
-        })
     }
 
     addRemind = (remind) => {
@@ -35,12 +28,12 @@ export class ModalComponent extends React.Component {
     }
 
     handlePickerConfirm = (date) => {
-        console.log(format(date, 't'))
-        const dateToFormat = format(date, 't');  //  BUG WITH FORMAT
+        console.log(format(date, 'T'))
+        const dateToFormat = +format(date, 'T');
         this.setState({
             date: dateToFormat,
             isPickerVisible: false
-        })
+        });
     }
 
     showPicker = (type) => {
@@ -53,6 +46,8 @@ export class ModalComponent extends React.Component {
     hidePicker = () => {
         this.setState({isPickerVisible: false})
     }
+
+    // NEED TO WRITE CLOSE MODAL METHOD WITH  CLEAR STATE
 
     render() {
         return (
@@ -107,7 +102,7 @@ export class ModalComponent extends React.Component {
                                 onCancel={this.hidePicker}
                             />
                             <View style={{marginBottom: 10}}>
-                                {/* <Text>{this.state.date ? format(this.state.date, 'PP / pp') : 'Дата не выбрана'}</Text> */}
+                                <Text>{this.state.date ? format(this.state.date, 'PP / pp') : 'Дата не выбрана'}</Text>
                             </View>
                             <Button
                                 onPress={()=> this.addRemind(this.state)}
