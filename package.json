@@ -12,6 +12,7 @@
     "@react-native-community/masked-view": "0.1.6",
     "@react-navigation/native": "^5.1.5",
     "@react-navigation/stack": "^5.2.10",
+    "axios": "^0.19.2",
     "base-64": "^0.1.0",
     "date-fns": "^2.13.0",
     "date-fns-tz": "^1.0.10",
@@ -28,7 +29,10 @@
     "react-native-safe-area-context": "0.7.3",
     "react-native-screens": "~2.2.0",
     "react-native-web": "~0.11.7",
-    "react-navigation": "^4.3.7"
+    "react-navigation": "^4.3.7",
+    "react-redux": "^7.2.0",
+    "redux": "^4.0.5",
+    "redux-axios-middleware": "^4.0.1"
   },
   "devDependencies": {
     "babel-preset-expo": "~8.1.0",

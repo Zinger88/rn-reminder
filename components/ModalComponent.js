@@ -1,7 +1,8 @@
 import React from 'react';
-import { ImageBackground, StyleSheet, Modal, TouchableHighlight, View, Alert } from 'react-native';
-import { Button, Container, Header, Content, List, ListItem, Text, Textarea } from 'native-base';
+import { StyleSheet, Modal, TouchableHighlight, View, Alert } from 'react-native';
+import { Button, Text, Textarea } from 'native-base';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
+import { format } from 'date-fns';
 
 export class ModalComponent extends React.Component {
     /**
@@ -9,12 +10,56 @@ export class ModalComponent extends React.Component {
      * COMPONENT WILL HAVE CACHE AND RETURN DATA
      */
 
+     state = {
+        title: '',
+        date: '',
+        pickerType: 'date',
+        isPickerVisible: false,
+     }
+
+    componentWillUnmount() {
+        this.setState({
+            title: '',
+            date: ''
+        })
+    }
+
+    addRemind = (remind) => {
+        this.props.addRemind(remind);
+    }
+
+    writeRemind = (text) => {
+        this.setState({
+            title: text
+        })
+    }
+
+    handlePickerConfirm = (date) => {
+        console.log(format(date, 't'))
+        const dateToFormat = format(date, 't');  //  BUG WITH FORMAT
+        this.setState({
+            date: dateToFormat,
+            isPickerVisible: false
+        })
+    }
+
+    showPicker = (type) => {
+        this.setState({
+            pickerType: type,
+            isPickerVisible: true
+        });
+    }
+
+    hidePicker = () => {
+        this.setState({isPickerVisible: false})
+    }
+
     render() {
         return (
             <Modal
                 animationType="slide" 
                 transparent={true}
-                visible={this.state.modalVisible}
+                visible={this.props.modalVisible}
                 onRequestClose={() => {
                     Alert.alert("Modal has been closed.");
                 }}
@@ -25,13 +70,13 @@ export class ModalComponent extends React.Component {
                     <View
                         style={style.modalWhiteWindow}
                     >
-                        <TouchableHighlight
+                        <TouchableHighlight                   // strange tap 
                             style={style.modalCloseButton}
                             onPress={() => {
-                                this.setModalVisible(!this.state.modalVisible);
+                                this.props.setModalVisible(false);
                             }}
                         >
-                            <Text>x</Text>
+                            <Text>X</Text>
                         </TouchableHighlight>
                         <View style={style.modalView}>
                             <Text style={{marginBottom: 10}}>Write your remind</Text>
@@ -61,8 +106,11 @@ export class ModalComponent extends React.Component {
                                 onConfirm={this.handlePickerConfirm}
                                 onCancel={this.hidePicker}
                             />
+                            <View style={{marginBottom: 10}}>
+                                {/* <Text>{this.state.date ? format(this.state.date, 'PP / pp') : 'Дата не выбрана'}</Text> */}
+                            </View>
                             <Button
-                                onPress={()=> this.addRemind(this.state.cache)}
+                                onPress={()=> this.addRemind(this.state)}
                             >
                                 <Text>Готово!</Text>
                             </Button>
