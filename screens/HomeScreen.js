@@ -94,15 +94,15 @@ export class HomeScreen extends React.Component {
                         setModalVisible={this.setModalVisible}
                         addRemind={this.addRemind}
                     ></ModalComponent>
+                    <Text style={style.title}>{`Yo ${this.state.displayName || this.state.email}, lets check you business`}</Text>
+                    <Button
+                        onPress={() => this.setModalVisible(!this.state.modalVisible)}
+                        light 
+                        block 
+                        style={{paddingHorizontal: 15}}>
+                        <Text>Добавить напоминалку</Text>
+                    </Button>
                     <Content>
-                        <Text style={style.title}>{`Yo ${this.state.displayName || this.state.email}, lets check you business`}</Text>
-                        <Button
-                            onPress={() => this.setModalVisible(!this.state.modalVisible)}
-                            light 
-                            block 
-                            style={{paddingHorizontal: 15}}>
-                            <Text>Добавить напоминалку</Text>
-                        </Button>
                         {this.state.reminders.length ? (
                             <List>
                                 {this.state.reminders.map((reminder, index) => {
