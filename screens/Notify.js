@@ -3,23 +3,38 @@ import { Text, ImageBackground, StyleSheet } from 'react-native';
 import { Button, Container, Col, Grid, Content } from 'native-base';
 import { format } from 'date-fns';
 import { ModalComponent } from '../components/ModalComponent';
+import * as firebase from 'firebase';
+import 'firebase/firestore';
+import {decode, encode} from 'base-64'
+
+if (!global.btoa) {  global.btoa = encode }
+
+if (!global.atob) { global.atob = decode }
 
 export class Notify extends React.Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            email: '',
-            displayName: '',
             modalVisible: false,
             isPickerVisible: false,
             pickerType: 'date'
         }
     }
 
+    // REDUX !!!!!!! Hehehe
+    // Update firebase , then need to Update data.
+
+
     changeRemind = (data) => {
         console.log(data)
         this.setModalVisible(false);
+        const db = firebase.firestore();
+        // works fine
+        db.collection('reminders').doc(this.props.route.params.otherParam.id).update({
+            title: data.title || this.props.route.params.otherParam.title,
+            date: data.date || this.props.route.params.otherParam.date
+        });
     }
 
     setModalVisible = (visible) => {
