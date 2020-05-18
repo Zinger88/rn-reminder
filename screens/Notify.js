@@ -1,40 +1,88 @@
 import React from 'react';
-import { Text, ImageBackground } from 'react-native';
-import { Button, Container, Header, Col, Grid, Content, List, ListItem } from 'native-base';
+import { Text, ImageBackground, StyleSheet } from 'react-native';
+import { Button, Container, Col, Grid, Content } from 'native-base';
+import { format } from 'date-fns';
+import { ModalComponent } from '../components/ModalComponent';
 
 export class Notify extends React.Component {
     constructor(props) {
         super(props);
+
+        this.state = {
+            email: '',
+            displayName: '',
+            modalVisible: false,
+            isPickerVisible: false,
+            pickerType: 'date'
+        }
+    }
+
+    changeRemind = (data) => {
+        console.log(data)
+        this.setModalVisible(false);
+    }
+
+    setModalVisible = (visible) => {
+        this.setState({ 
+            modalVisible: visible,
+        });
     }
 
     render() {
-        const {title, date, description} = this.props.route.params.otherParam;
-        const newDateObj = new Date(date);
-        const month = newDateObj.getMonth() + 1;
-        const year = newDateObj.getFullYear();
-        const day = newDateObj.getDate();
-        const hour = newDateObj.getHours();
-        const minutes = newDateObj.getMinutes();
+        const {title, date} = this.props.route.params.otherParam;
+        const formatedDate = format(date, 'PP / pp');
         return(
             <ImageBackground source={{uri: 'https://i.pinimg.com/originals/4c/7a/b1/4c7ab1da89e96e9051005526164af8ed.jpg'}} style={{width: '100%', height: '100%', opacity: 0.7}}>
                 <Container>
                     <Content>
                     <Grid>
-                        <Col style={{ backgroundColor: '#635DB7', height: 50 }}>
-                            <Text>{title}</Text>
-                        </Col>
-                        <Col style={{ backgroundColor: '#635DB7', height: 50 }}>
-                            <Text>{`${day}.${month} ${year} / ${hour} : ${minutes}`}</Text>
+                        <Col style={style.title}>
+                            <Text style={style.titleText}>{title}</Text>
                         </Col>
                     </Grid>
                     <Grid>
-                        <Col style={{ backgroundColor: '#e5e5e5', height: 100 }}>
-                            <Text>{description}</Text>
+                        <Col style={style.date}>
+                            <Text style={style.dateText}>{formatedDate}</Text>
                         </Col>
                     </Grid>
+                    <Button
+                        onPress={() => this.setModalVisible(true)}
+                        light 
+                        block 
+                        style={{paddingHorizontal: 15, marginHorizontal: 30}}>
+                        <Text>РЕДАКТИРОВАТЬ</Text>
+                    </Button>
                     </Content>
+
+                    <ModalComponent
+                        modalVisible={this.state.modalVisible}
+                        setModalVisible={this.setModalVisible}
+                        addRemind={this.changeRemind}
+                    ></ModalComponent>
                 </Container>
             </ImageBackground>
         )
     }
 }
+
+const style = new StyleSheet.create({
+    title : {
+        height: 'auto',
+        margin: 30,
+        paddingBottom: 20,
+        paddingTop: 20,
+        borderBottomWidth: 1,
+        borderBottomColor: '#c5c5c5'
+    },
+    titleText: {
+        fontSize: 26,
+        textAlign: 'center'
+    },
+    date: {
+        marginBottom: 30
+    },
+    dateText: {
+        textAlign: 'center',
+        fontSize: 20
+    }
+})

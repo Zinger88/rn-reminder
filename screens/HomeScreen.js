@@ -111,7 +111,7 @@ export class HomeScreen extends React.Component {
                                         key={index + Math.random()}
                                         onLongPress={this.removeRemind(reminder.id)}
                                         onPress={() => this.props.navigation.navigate('Notify',{
-                                            itemId: 1,
+                                            itemId: reminder.id,
                                             otherParam: reminder
                                         })}
                                         style={{flexDirection: 'column', justifyContent: 'flex-start', alignContent: 'center'}}
