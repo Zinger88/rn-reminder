@@ -1,11 +1,13 @@
 import React from 'react';
-import { ImageBackground, StyleSheet, Alert } from 'react-native';
+import { ImageBackground, StyleSheet, Vibration, Platform, Alert } from 'react-native';
 import { Button, Container, Header, Content, List, ListItem, Text, Spinner, Icon } from 'native-base';
 import { ModalComponent } from '../components/ModalComponent'
 import * as firebase from 'firebase';
 import 'firebase/firestore';
-import { format, addHours } from 'date-fns';
-//import { format, zonedTimeToUtc } from 'date-fns-tz';
+import { format } from 'date-fns';
+import * as Permissions from 'expo-permissions';
+import { Notifications } from 'expo';
+import Constants from 'expo-constants';
 
 import {decode, encode} from 'base-64'
 
@@ -20,7 +22,9 @@ export class HomeScreen extends React.Component {
         modalVisible: false,
         reminders: [],
         isPickerVisible: false,
-        pickerType: 'date'
+        pickerType: 'date',
+        expoPushToken: '',
+        notification: {}
     }
 
     componentWillUnmount() {
@@ -44,7 +48,70 @@ export class HomeScreen extends React.Component {
         }).catch((error)=>{
             console.log(error.message)
         })
+
+        this.registerForPushNotificationsAsync();
+        this._notificationSubscription = Notifications.addListener(this._handleNotification);
     }
+
+    registerForPushNotificationsAsync = async () => {
+        if (Constants.isDevice) {
+            const { status: existingStatus } = await Permissions.getAsync(Permissions.NOTIFICATIONS);
+            let finalStatus = existingStatus;
+            if (existingStatus !== 'granted') {
+                const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
+                finalStatus = status;
+            }
+            if (finalStatus !== 'granted') {
+                alert('Failed to get push token for push notification!');
+                return;
+            }
+            let token = await Notifications.getExpoPushTokenAsync();
+            console.log(token);
+            this.setState({ expoPushToken: token });
+        } else {
+            alert('Must use physical device for Push Notifications');
+        }
+    
+        if (Platform.OS === 'android') {
+            Notifications.createChannelAndroidAsync('default', {
+                name: 'default',
+                sound: true,
+                priority: 'max',
+                vibrate: [0, 250, 250, 250],
+            });
+        }
+    };
+
+    _handleNotification = notification => {
+        Vibration.vibrate();
+        console.log(notification);
+        this.setState({ notification: notification });
+    };
+
+    // NEED TO GET DATA FROM NOTIFICATION
+    // CALCULATE DELAY 
+    // 21.05.20 00:18 OHOHOHOHO YEA))))))))))))
+
+    sendPushNotification = async () => {
+        console.log(this.state.notification)
+        const message = {
+            to: this.state.expoPushToken,
+            sound: 'default',
+            title: 'Original Title',
+            body: 'And here is the body!',
+            data: { data: 'goes here' },
+            _displayInForeground: true,
+        };
+        const response = await fetch('https://exp.host/--/api/v2/push/send', {
+            method: 'POST',
+            headers: {
+            Accept: 'application/json',
+            'Accept-encoding': 'gzip, deflate',
+            'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(message),
+        });
+    };
 
     signOutUser = () => {
         firebase.auth().signOut();
@@ -66,6 +133,8 @@ export class HomeScreen extends React.Component {
         });
         const db = firebase.firestore(); // need to create global database
         db.collection('reminders').add(newRemind);
+
+        this.sendPushNotification() // NOT HERE !
     }
 
     removeRemind = (id) => () => {
